@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subscribe to a JG Tech Solutions support plan for faster response and lower support costs.">
+    <title>Plan Subscription | JG Tech Solutions</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="content-page">
+        <nav id="top">
+            <a class="nav-logo" href="index.html" aria-label="JG Tech Solutions home">JG <span>Tech</span> Solutions</a>
+            <button class="nav-menu-btn" type="button" aria-expanded="false" aria-controls="site-nav-links" aria-label="Toggle navigation menu">
+                <span class="menu-icon" aria-hidden="true"></span>
+                <span class="menu-label">Menu</span>
+            </button>
+            <div class="nav-links" id="site-nav-links">
+                <a href="index.html#services">Services</a>
+                <a href="plans.html">Plans</a>
+                <a href="plan-subscription.html">Subscribe</a>
+                <a href="what-is-arear.html">What Is AREAR</a>
+                <a href="index.html#contact">Contact</a>
+                <a class="mobile-call-link" href="tel:5125406522">Call 512-540-6522</a>
+            </div>
+            <a class="nav-cta" href="tel:5125406522">512-540-6522</a>
+        </nav>
+
+        <header class="content-hero reveal">
+            <p class="section-eyebrow">Enrollment</p>
+            <h1>Plan Subscription Request</h1>
+            <p>Submit your request to enroll in a support plan. We will confirm fit, scope, and pricing with you before activation.</p>
+            <div class="content-actions">
+                <a class="btn-ghost" href="plans.html">Compare Plans</a>
+            </div>
+        </header>
+
+        <main class="content-wrap">
+            <section class="content-section reveal">
+                <span class="badge-line">Choose Your Plan</span>
+                <h2>Select the support level that fits your needs.</h2>
+                <div class="plan-list">
+                    <article class="plan-option">
+                        <h3>Pay-As-You-Go Support</h3>
+                        <p>Standard call-in service (no subscription required). Initial diagnostic assessment starts at $75 and is applied toward approved repair work.</p>
+                    </article>
+                    <article class="plan-option">
+                        <h3>Priority Care Plan</h3>
+                        <p>$20-$40/month for home users who want reduced diagnostics and faster scheduling.</p>
+                    </article>
+                    <article class="plan-option">
+                        <h3>Priority Support Plan</h3>
+                        <p>$60-$120+/month for business-critical systems requiring priority response.</p>
+                    </article>
+                    <article class="plan-option">
+                        <h3>Hardware-First Support Option</h3>
+                        <p>For clients focused on upgrades and replacements with install/configuration support.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="content-section reveal">
+                <span class="badge-line">Subscription Form</span>
+                <h2>Request Enrollment</h2>
+                <p>This form is for subscription plans only. For Pay-As-You-Go service, call <a href="tel:5125406522">512-540-6522</a>.</p>
+                <form class="contact-form" action="https://formsubmit.co/JoshuaG@JGTechSolutions.net" method="post">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_subject" value="New Plan Subscription Request">
+                    <input type="hidden" name="_template" value="table">
+
+                    <label for="subscriber-name">Full name</label>
+                    <input id="subscriber-name" name="Full Name" type="text" placeholder="Your full name" required>
+
+                    <label for="subscriber-email">Email</label>
+                    <input id="subscriber-email" name="Email" type="email" placeholder="you@company.com" required>
+
+                    <label for="subscriber-phone">Phone</label>
+                    <input id="subscriber-phone" name="Phone" type="tel" placeholder="(###) ###-####" required>
+
+                    <label for="client-type">Client type</label>
+                    <select id="client-type" name="Client Type" required>
+                        <option value="" selected disabled>Select one</option>
+                        <option value="Home User">Home User</option>
+                        <option value="Small Business">Small Business</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <label for="selected-plan">Requested plan</label>
+                    <select id="selected-plan" name="Requested Plan" required>
+                        <option value="" selected disabled>Select a plan</option>
+                        <option value="Priority Care Plan">Priority Care Plan</option>
+                        <option value="Priority Support Plan">Priority Support Plan</option>
+                        <option value="Hardware-First Support Option">Hardware-First Support Option</option>
+                    </select>
+
+                    <label for="support-needs">Current support needs</label>
+                    <textarea id="support-needs" name="Support Needs" rows="5" placeholder="Describe your current systems, issues, and desired response level." required></textarea>
+
+                    <label for="preferred-contact">Preferred contact method</label>
+                    <select id="preferred-contact" name="Preferred Contact Method" required>
+                        <option value="" selected disabled>Select one</option>
+                        <option value="Phone">Phone</option>
+                        <option value="Email">Email</option>
+                        <option value="Text">Text</option>
+                    </select>
+
+                    <label for="best-time">Best time to reach you</label>
+                    <input id="best-time" name="Best Time to Reach" type="text" placeholder="Weekdays after 4 PM, mornings, etc.">
+
+                    <label class="consent-row" for="plan-consent">
+                        <input id="plan-consent" name="Plan Terms Consent" type="checkbox" value="Agreed" required>
+                        <span>I agree that plan activation and all major work require approval after AREAR diagnosis.</span>
+                    </label>
+
+                    <button class="btn-primary" type="submit">Submit Subscription Request</button>
+                    <p class="form-status" role="status" aria-live="polite"></p>
+                </form>
+            </section>
+
+            <section class="content-section reveal">
+                <span class="badge-line">Important Notes</span>
+                <ul>
+                    <li>Subscription requests are reviewed before plan activation.</li>
+                    <li>All major repair work still requires approval after AREAR diagnosis.</li>
+                    <li>Final monthly pricing depends on scope, system complexity, and service volume.</li>
+                </ul>
+            </section>
+        </main>
+
+        <div class="content-footer">
+            <p>© <span id="year"></span> JG Tech Solutions</p>
+            <p><a href="index.html">Back to Home</a></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
