@@ -143,6 +143,8 @@ contactForms.forEach((contactForm) => {
 
     const statusEl = contactForm.querySelector(".form-status");
     const button = contactForm.querySelector("button");
+    const successMessage = contactForm.getAttribute("data-success-message") || "Message sent. We will reach out soon.";
+    const errorMessage = contactForm.getAttribute("data-error-message") || "Send failed. Please call 512-540-6522 or email JoshuaG@JGTechSolutions.net.";
 
     contactForm.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -187,13 +189,13 @@ contactForms.forEach((contactForm) => {
 
                 contactForm.reset();
                 if (statusEl) {
-                    statusEl.textContent = "Message sent. We will reach out soon.";
+                    statusEl.textContent = successMessage;
                     statusEl.classList.remove("is-error");
                 }
             })
             .catch(() => {
                 if (statusEl) {
-                    statusEl.textContent = "Send failed. Please call 512-540-6522 or email JoshuaG@JGTechSolutions.net.";
+                    statusEl.textContent = errorMessage;
                     statusEl.classList.add("is-error");
                 }
             })

@@ -16,6 +16,7 @@
         </button>
         <div class="nav-links" id="site-nav-links">
             <a href="#services">Services</a>
+            <a href="https://quote.jgrabowski.net" target="_blank" rel="noopener noreferrer">Website Quote</a>
             <a href="plans.html">Plans</a>
             <a href="plan-subscription.html">Subscribe</a>
             <a href="what-is-arear.html">What Is AREAR</a>
@@ -134,7 +135,7 @@
                 <div>
                     <h3 class="about-name">Joshua Grabowski</h3>
                     <p class="about-role">Owner and IT Specialist</p>
-                    <p class="about-bio">Army veteran, Central Texas local, and the guy who actually answers when you call. I started JG Tech Solutions because people in this area deserve reliable tech help without big-city prices or big-box runaround. When you call, you get me - not a dispatcher, not a different tech every time.</p>
+                    <p class="about-bio">Current LVFD firefighter and Central Texas local. I started JG Tech Solutions because people in this area deserve reliable tech help without the runaround. When you call, you get me &mdash; not a dispatcher, not a different tech every time.</p>
                 </div>
             </div>
         </section>
@@ -192,7 +193,7 @@
             <div class="lead-form-inner">
                 <p class="section-eyebrow">Prefer email?</p>
                 <h2 class="section-title form-title">Send your request online.</h2>
-                <form class="contact-form" action="https://formsubmit.co/JoshuaG@JGTechSolutions.net" method="post">
+                <form class="contact-form" action="https://formsubmit.co/JoshuaG@JGTechSolutions.net" method="post" data-success-message="Request sent. We will contact you shortly." data-error-message="Send failed. Please call 512-540-6522 or email JoshuaG@JGTechSolutions.net.">
                     <input type="hidden" name="_captcha" value="false">
                     <input type="hidden" name="_subject" value="New JG Tech Solutions Website Request">
                     <input type="hidden" name="_template" value="table">
@@ -200,6 +201,28 @@
                     <input id="name" name="name" type="text" placeholder="Your name" required>
                     <label for="email">Email</label>
                     <input id="email" name="email" type="email" placeholder="you@company.com" required>
+                    <label for="phone">Phone</label>
+                    <input id="phone" name="phone" type="tel" placeholder="(###) ###-####" required>
+                    <label for="service-type">Service needed</label>
+                    <select id="service-type" name="service_type" required>
+                        <option value="" selected disabled>Select a service</option>
+                        <option value="Computer Repair and Setup">Computer Repair and Setup</option>
+                        <option value="Home and Business Networking">Home and Business Networking</option>
+                        <option value="Website Design">Website Design</option>
+                        <option value="Tech Support and Training">Tech Support and Training</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <label for="payment-method">Preferred payment method</label>
+                    <select id="payment-method" name="preferred_payment_method" required>
+                        <option value="" selected disabled>Select one</option>
+                        <option value="Card via secure invoice link">Card via secure invoice link</option>
+                        <option value="ACH or bank transfer">ACH or bank transfer</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Check">Check</option>
+                        <option value="Zelle">Zelle</option>
+                        <option value="Cash App">Cash App</option>
+                        <option value="Venmo">Venmo</option>
+                    </select>
                     <label for="project">Project details</label>
                     <textarea id="project" name="project" rows="5" placeholder="Tell us what you need fixed or built." required></textarea>
                     <button class="btn-primary" type="submit">Send Request</button>
@@ -224,7 +247,12 @@
                 </div>
                 <div>
                     <p class="contact-label">More info</p>
-                    <p class="contact-val"><a href="plans.html">Service Plans</a> | <a href="plan-subscription.html">Subscribe</a> | <a href="what-is-arear.html">What Is AREAR</a></p>
+                    <p class="contact-val contact-links-list">
+                        <a href="https://quote.jgrabowski.net" target="_blank" rel="noopener noreferrer">Website Quote</a>
+                        <a href="plans.html">Service Plans</a>
+                        <a href="plan-subscription.html">Subscribe</a>
+                        <a href="what-is-arear.html">What Is AREAR</a>
+                    </p>
                 </div>
             </div>
         </div>

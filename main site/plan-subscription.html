@@ -17,6 +17,7 @@
             </button>
             <div class="nav-links" id="site-nav-links">
                 <a href="index.html#services">Services</a>
+                <a href="https://quote.jgrabowski.net" target="_blank" rel="noopener noreferrer">Website Quote</a>
                 <a href="plans.html">Plans</a>
                 <a href="plan-subscription.html">Subscribe</a>
                 <a href="what-is-arear.html">What Is AREAR</a>
@@ -63,7 +64,7 @@
                 <span class="badge-line">Subscription Form</span>
                 <h2>Request Enrollment</h2>
                 <p>This form is for subscription plans only. For Pay-As-You-Go service, call <a href="tel:5125406522">512-540-6522</a>.</p>
-                <form class="contact-form" action="https://formsubmit.co/JoshuaG@JGTechSolutions.net" method="post">
+                <form class="contact-form" action="https://formsubmit.co/JoshuaG@JGTechSolutions.net" method="post" data-success-message="Subscription request sent. We will confirm plan fit and next steps shortly." data-error-message="Send failed. Please call 512-540-6522 or email JoshuaG@JGTechSolutions.net.">
                     <input type="hidden" name="_captcha" value="false">
                     <input type="hidden" name="_subject" value="New Plan Subscription Request">
                     <input type="hidden" name="_template" value="table">
@@ -76,6 +77,9 @@
 
                     <label for="subscriber-phone">Phone</label>
                     <input id="subscriber-phone" name="Phone" type="tel" placeholder="(###) ###-####" required>
+
+                    <label for="business-name">Business name (if applicable)</label>
+                    <input id="business-name" name="Business Name" type="text" placeholder="Company name">
 
                     <label for="client-type">Client type</label>
                     <select id="client-type" name="Client Type" required>
@@ -92,6 +96,28 @@
                         <option value="Priority Support Plan">Priority Support Plan</option>
                         <option value="Hardware-First Support Option">Hardware-First Support Option</option>
                     </select>
+
+                    <label for="billing-cycle">Preferred billing cycle</label>
+                    <select id="billing-cycle" name="Preferred Billing Cycle" required>
+                        <option value="" selected disabled>Select one</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Quarterly">Quarterly</option>
+                        <option value="Annual">Annual</option>
+                    </select>
+
+                    <label for="subscription-payment-method">Preferred payment method</label>
+                    <select id="subscription-payment-method" name="Preferred Payment Method" required>
+                        <option value="" selected disabled>Select one</option>
+                        <option value="Card via secure invoice link">Card via secure invoice link</option>
+                        <option value="ACH or bank transfer">ACH or bank transfer</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Check">Check</option>
+                        <option value="Zelle">Zelle</option>
+                        <option value="Cash App">Cash App</option>
+                        <option value="Venmo">Venmo</option>
+                    </select>
+
+                    <p class="helper-text">For card payments, a secure invoice link is sent after plan approval and scope confirmation.</p>
 
                     <label for="support-needs">Current support needs</label>
                     <textarea id="support-needs" name="Support Needs" rows="5" placeholder="Describe your current systems, issues, and desired response level." required></textarea>
@@ -115,6 +141,26 @@
                     <button class="btn-primary" type="submit">Submit Subscription Request</button>
                     <p class="form-status" role="status" aria-live="polite"></p>
                 </form>
+            </section>
+
+            <section class="content-section reveal">
+                <span class="badge-line">Payment Methods</span>
+                <h2>Accepted Payment Methods</h2>
+                <div class="payment-grid">
+                    <article class="payment-item">
+                        <h3>Card Payments</h3>
+                        <p>Visa, Mastercard, Discover, and American Express via secure invoice link.</p>
+                    </article>
+                    <article class="payment-item">
+                        <h3>Bank Transfer</h3>
+                        <p>ACH and direct bank transfer for approved subscription billing.</p>
+                    </article>
+                    <article class="payment-item">
+                        <h3>Local Payment Methods</h3>
+                        <p>Cash, check, Zelle, Cash App, and Venmo accepted by arrangement.</p>
+                    </article>
+                </div>
+                <p class="helper-text">Payment terms are finalized during onboarding. Hardware and labor are billed separately unless otherwise stated in your plan.</p>
             </section>
 
             <section class="content-section reveal">
