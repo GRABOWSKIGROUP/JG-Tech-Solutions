@@ -1,62 +1,207 @@
-// Falling matrix that freezes after initial animation
-const main = document.querySelector('main');
-const canvas = document.createElement('canvas');
-main.appendChild(canvas);
-const ctx = canvas.getContext('2d');
-
-function randomDrops(count, maxHeight) {
-  return Array.from({ length: count }, () => Math.floor(Math.random() * (maxHeight || 25)) + 1);
+const yearEl = document.getElementById("year");
+if (yearEl) {
+    yearEl.textContent = String(new Date().getFullYear());
 }
 
-function resize() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  columns = Math.floor(canvas.width / fontSize);
-  drops = randomDrops(columns, Math.ceil(canvas.height / fontSize));
+const navMenuButton = document.querySelector(".nav-menu-btn");
+const mainNav = document.querySelector("nav");
+const navLinksContainer = document.querySelector(".nav-links");
+
+if (navMenuButton instanceof HTMLButtonElement && mainNav instanceof HTMLElement && navLinksContainer instanceof HTMLElement) {
+    const menuLabel = navMenuButton.querySelector(".menu-label");
+
+    const closeMenu = () => {
+        mainNav.classList.remove("menu-open");
+        navMenuButton.setAttribute("aria-expanded", "false");
+        if (menuLabel) {
+            menuLabel.textContent = "Menu";
+        }
+    };
+
+    navMenuButton.addEventListener("click", () => {
+        const isOpen = mainNav.classList.toggle("menu-open");
+        navMenuButton.setAttribute("aria-expanded", String(isOpen));
+        if (menuLabel) {
+            menuLabel.textContent = isOpen ? "Close" : "Menu";
+        }
+    });
+
+    navLinksContainer.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", closeMenu);
+    });
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 600) {
+            closeMenu();
+        }
+    });
 }
 
-const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴー0 1';
-const fontSize = 20;
-let columns = Math.floor(window.innerWidth / fontSize);
-let drops = randomDrops(columns, Math.ceil(window.innerHeight / fontSize));
+const revealItems = Array.from(document.querySelectorAll(".reveal"));
+if ("IntersectionObserver" in window) {
+    const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+            });
+        },
+        { threshold: 0.14 }
+    );
 
-function remapColor(idx, len) {
-  return 'rgba(255, 0, 0, 0.8)';
+    revealItems.forEach((item, index) => {
+        item.style.transitionDelay = `${Math.min(index * 45, 260)}ms`;
+        revealObserver.observe(item);
+    });
+} else {
+    revealItems.forEach((item) => item.classList.add("visible"));
 }
 
-let frame = 0;
-let intervalId;
+const faqButtons = Array.from(document.querySelectorAll(".faq-q"));
+faqButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        const item = button.closest(".faq-item");
+        if (!item) {
+            return;
+        }
 
-function draw() {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const wasOpen = item.classList.contains("open");
 
-  for (let i = 0; i < drops.length; i++) {
-    const text = chars.charAt(Math.floor(Math.random() * chars.length));
-    const x = i * fontSize;
-    const y = drops[i] * fontSize;
+        document.querySelectorAll(".faq-item.open").forEach((openItem) => {
+            openItem.classList.remove("open");
+            const openButton = openItem.querySelector(".faq-q");
+            if (openButton) {
+                openButton.setAttribute("aria-expanded", "false");
+            }
+        });
 
-    ctx.fillStyle = remapColor(drops[i] % 20, 20);
-    ctx.font = `${fontSize}px "Helvetica Neue", Helvetica, sans-serif`;
-    ctx.fillText(text, x, y);
+        if (!wasOpen) {
+            item.classList.add("open");
+            button.setAttribute("aria-expanded", "true");
+        }
+    });
+});
 
-    if (y > canvas.height && Math.random() > 0.975) {
-      drops[i] = 0;
+const compactSections = Array.from(document.querySelectorAll(".compact-sections .content-section"));
+if (compactSections.length > 0) {
+    compactSections.forEach((section) => {
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.className = "section-toggle";
+        toggle.textContent = "Read more";
+        toggle.setAttribute("aria-expanded", "false");
+
+        toggle.addEventListener("click", () => {
+            const isExpanded = section.classList.toggle("is-expanded");
+            toggle.textContent = isExpanded ? "Show less" : "Read more";
+            toggle.setAttribute("aria-expanded", String(isExpanded));
+        });
+
+        section.appendChild(toggle);
+    });
+
+    const mobileCompactQuery = window.matchMedia("(max-width: 760px)");
+
+    const syncCompactMode = () => {
+        const isCompact = mobileCompactQuery.matches;
+        document.body.classList.toggle("compact-mode", isCompact);
+
+        compactSections.forEach((section) => {
+            const toggle = section.querySelector(".section-toggle");
+            if (!(toggle instanceof HTMLButtonElement)) {
+                return;
+            }
+
+            if (isCompact) {
+                section.classList.remove("is-expanded");
+                toggle.textContent = "Read more";
+                toggle.setAttribute("aria-expanded", "false");
+            } else {
+                section.classList.add("is-expanded");
+                toggle.textContent = "Show less";
+                toggle.setAttribute("aria-expanded", "true");
+            }
+        });
+    };
+
+    syncCompactMode();
+    if (typeof mobileCompactQuery.addEventListener === "function") {
+        mobileCompactQuery.addEventListener("change", syncCompactMode);
+    } else {
+        mobileCompactQuery.addListener(syncCompactMode);
     }
-    drops[i]++;
-  }
-
-  frame += 1;
-  if (frame > 120) {
-    clearInterval(intervalId);
-    // Freeze frame; leave as-is.
-  }
 }
 
-resize();
-window.addEventListener('resize', resize);
+const contactForms = Array.from(document.querySelectorAll(".contact-form"));
+contactForms.forEach((contactForm) => {
+    if (!(contactForm instanceof HTMLFormElement)) {
+        return;
+    }
 
-// initial draw frame immediately so tints and streaks appear before interval
-draw();
-intervalId = setInterval(draw, 50);
+    const statusEl = contactForm.querySelector(".form-status");
+    const button = contactForm.querySelector("button");
+    const successMessage = contactForm.getAttribute("data-success-message") || "Message sent. We will reach out soon.";
+    const errorMessage = contactForm.getAttribute("data-error-message") || "Send failed. Please call 512-540-6522 or email JoshuaG@JGTechSolutions.net.";
 
+    contactForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (!(button instanceof HTMLButtonElement)) {
+            return;
+        }
+
+        const actionUrl = String(contactForm.getAttribute("action") || "");
+        const submitUrl = actionUrl.includes("formsubmit.co/")
+            ? actionUrl.replace("formsubmit.co/", "formsubmit.co/ajax/")
+            : actionUrl;
+
+        if (!submitUrl) {
+            if (statusEl) {
+                statusEl.textContent = "Unable to submit right now. Please call 512-540-6522.";
+                statusEl.classList.add("is-error");
+            }
+            return;
+        }
+
+        const previousText = button.textContent || "Send Request";
+        button.textContent = "Sending...";
+        button.disabled = true;
+
+        if (statusEl) {
+            statusEl.textContent = "";
+            statusEl.classList.remove("is-error");
+        }
+
+        fetch(submitUrl, {
+            method: "POST",
+            body: new FormData(contactForm),
+            headers: {
+                Accept: "application/json"
+            }
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Request failed");
+                }
+
+                contactForm.reset();
+                if (statusEl) {
+                    statusEl.textContent = successMessage;
+                    statusEl.classList.remove("is-error");
+                }
+            })
+            .catch(() => {
+                if (statusEl) {
+                    statusEl.textContent = errorMessage;
+                    statusEl.classList.add("is-error");
+                }
+            })
+            .finally(() => {
+                button.textContent = previousText;
+                button.disabled = false;
+            });
+    });
+});
