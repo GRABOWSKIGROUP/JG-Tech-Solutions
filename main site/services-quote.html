@@ -43,6 +43,14 @@
             margin-bottom: 22px;
         }
 
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
         .brand {
             color: #fff;
             text-decoration: none;
@@ -395,7 +403,10 @@
     <div class="wrap">
         <div class="topbar">
             <a class="brand" href="/">JG <span>Tech</span> Solutions</a>
-            <a class="back-link" href="/">Back to Home</a>
+            <div class="topbar-actions">
+                <a class="back-link" href="https://quote.jgtechsolutions.net" target="_blank" rel="noopener noreferrer">Website Quote</a>
+                <a class="back-link" href="/">Back to Home</a>
+            </div>
         </div>
 
         <header class="hero">
@@ -602,6 +613,14 @@
         const MONTHLY_NOTE = "Monthly plan credit applies toward labor this month only. Unused credit does not roll over.";
         const DIAGNOSTIC_NOTE = "Applied toward repair cost if work proceeds.";
 
+        const PLAN_SERVICE_IDS = new Set([
+            "priority-care-basic",
+            "priority-care-plus",
+            "priority-support-standard",
+            "priority-support-pro",
+            "priority-support-premium"
+        ]);
+
         const SERVICE_CATALOG = {
             diagnostic: { name: "Initial Diagnostic Assessment", type: "fixed", amount: 75, clientTypes: ["consumer", "business"], note: DIAGNOSTIC_NOTE },
             repair: { name: "Repair Work", type: "repairMode", clientTypes: ["consumer", "business"] },
@@ -663,11 +682,16 @@
 
         function activeServiceCards() {
             return Array.from(quoteForm.querySelectorAll(".service-card")).filter((card) => {
+                const serviceId = card.getAttribute("data-service-id") || "";
+                if (serviceId === "diagnostic") {
+                    return true;
+                }
+
                 const toggle = card.querySelector("[data-role='service-toggle']");
                 if (!(toggle instanceof HTMLInputElement) || !toggle.checked) {
                     return false;
                 }
-                const serviceId = card.getAttribute("data-service-id") || "";
+
                 const service = SERVICE_CATALOG[serviceId];
                 const clientType = getClientType();
                 return Boolean(service && service.clientTypes.includes(clientType));
@@ -675,7 +699,17 @@
         }
 
         function collectLineItems() {
-            return activeServiceCards().map((card) => {
+            const cards = activeServiceCards();
+            const selectedPlanCredit = cards.reduce((sum, card) => {
+                const serviceId = card.getAttribute("data-service-id") || "";
+                if (!PLAN_SERVICE_IDS.has(serviceId)) {
+                    return sum;
+                }
+                const service = SERVICE_CATALOG[serviceId];
+                return sum + (service ? service.amount : 0);
+            }, 0);
+
+            return cards.map((card) => {
                 const serviceId = card.getAttribute("data-service-id") || "";
                 const service = SERVICE_CATALOG[serviceId];
                 const descEl = card.querySelector("[data-role='service-desc']");
@@ -685,7 +719,21 @@
 
                 let amount = 0;
                 if (service.type === "fixed") {
-                    amount = service.amount;
+                    if (PLAN_SERVICE_IDS.has(serviceId)) {
+                        if (selectedPlanCredit > 0) {
+                            description = [baseDescription, `Monthly member credit applied: -${dollars(service.amount)}`].filter(Boolean).join(" | ");
+                        }
+                        amount = 0;
+                    } else if (serviceId === "diagnostic") {
+                        const reduced = Math.max(0, service.amount - selectedPlanCredit);
+                        amount = Math.round(reduced * 100) / 100;
+                        if (selectedPlanCredit > 0) {
+                            const creditNote = `Plan credit applied: -${dollars(Math.min(selectedPlanCredit, service.amount))}`;
+                            description = [baseDescription, creditNote].filter(Boolean).join(" | ");
+                        }
+                    } else {
+                        amount = service.amount;
+                    }
                 } else if (service.type === "repairMode") {
                     const billingSelect = card.querySelector("[data-role='repair-billing']");
                     if (billingSelect instanceof HTMLSelectElement) {
@@ -697,6 +745,7 @@
                             ? "Plan credit"
                             : "";
                     description = [baseDescription, billingLabel ? `Billing: ${billingLabel}` : ""].filter(Boolean).join(" | ");
+                    amount = 0;
                 } else if (service.type === "hardwareMargin") {
                     const hardwareInput = card.querySelector("[data-role='hardware-cost']");
                     const baseCost = parseMoney(hardwareInput instanceof HTMLInputElement ? hardwareInput.value : "0");
@@ -728,7 +777,11 @@
             summaryList.innerHTML = items.map((item) => {
                 total += item.amount;
                 const safeDesc = item.description || "No description added yet.";
-                const amountLabel = item.amount > 0 ? dollars(item.amount) : "TBD";
+                const amountLabel = PLAN_SERVICE_IDS.has(item.serviceId)
+                    ? `-${dollars(SERVICE_CATALOG[item.serviceId].amount)}`
+                    : item.amount > 0
+                        ? dollars(item.amount)
+                        : "TBD";
                 return `<div class="summary-row"><div><p class="summary-name">${item.name}</p><p class="summary-desc">${safeDesc}</p></div><span>${amountLabel}</span></div>`;
             }).join("");
 
@@ -764,12 +817,21 @@
             }
 
             const invalidItem = lineItems.find((item) => {
+                if (item.serviceId === "diagnostic") {
+                    return false;
+                }
+                if (PLAN_SERVICE_IDS.has(item.serviceId)) {
+                    return !item.baseDescription;
+                }
                 if (item.serviceId === "repair") {
                     return !item.baseDescription || !item.billingMode;
                 }
                 return !item.baseDescription || item.amount <= 0;
             });
             if (invalidItem) {
+                if (PLAN_SERVICE_IDS.has(invalidItem.serviceId)) {
+                    return `Please complete description for ${invalidItem.name}.`;
+                }
                 if (invalidItem.serviceId === "repair") {
                     return "Please complete scope and select Hourly or Plan for Repair Work.";
                 }
@@ -777,7 +839,7 @@
             }
 
             if (!lineItems.some((item) => item.amount > 0)) {
-                return "Add at least one priced service (such as Initial Diagnostic Assessment or a monthly plan) before submitting.";
+                return "Add at least one priced service (diagnostic, plan, or hardware support) before submitting.";
             }
 
             if (!pricingDisclaimer.checked) {
@@ -794,6 +856,24 @@
                 const card = toggle.closest(".service-card");
                 if (card) {
                     card.classList.toggle("is-active", toggle.checked);
+
+                    const serviceId = card.getAttribute("data-service-id") || "";
+                    if (toggle.checked && PLAN_SERVICE_IDS.has(serviceId)) {
+                        quoteForm.querySelectorAll(".service-card[data-service-id]").forEach((candidate) => {
+                            const candidateId = candidate.getAttribute("data-service-id") || "";
+                            if (candidateId === serviceId || !PLAN_SERVICE_IDS.has(candidateId)) {
+                                return;
+                            }
+                            const candidateToggle = candidate.querySelector("[data-role='service-toggle']");
+                            if (candidateToggle instanceof HTMLInputElement) {
+                                candidateToggle.checked = false;
+                                candidate.classList.remove("is-active");
+                                candidate.querySelectorAll("textarea, input[type='number']").forEach((field) => {
+                                    field.value = "";
+                                });
+                            }
+                        });
+                    }
                 }
                 renderSummary();
             });
@@ -822,6 +902,7 @@
             }
 
             const total = Math.round(lineItems.reduce((sum, item) => sum + item.amount, 0) * 100) / 100;
+            const billableItems = lineItems.filter((item) => item.amount > 0);
             const payload = {
                 clientType: getClientType(),
                 clientName: document.getElementById("client-name").value.trim(),
@@ -829,7 +910,12 @@
                 clientPhone: document.getElementById("client-phone").value.trim(),
                 consentToContact: document.getElementById("consent-contact").checked,
                 pricingDisclaimer: pricingDisclaimer.checked,
-                lineItems: lineItems.map((item) => ({
+                lineItems: billableItems.map((item) => ({
+                    name: item.name,
+                    description: item.note ? `${item.description} | ${item.note}` : item.description,
+                    amount: item.amount
+                })),
+                selectedServices: lineItems.map((item) => ({
                     name: item.name,
                     description: item.note ? `${item.description} | ${item.note}` : item.description,
                     amount: item.amount

@@ -86,8 +86,16 @@ async function squareRequest(path, body, accessToken) {
 }
 
 function buildOwnerEmailHtml(payload, invoiceId) {
-    const serviceRows = payload.lineItems
-        .map((item) => `<li><strong>${item.name}</strong> - $${Number(item.amount).toFixed(2)}<br>${item.description || "No description provided"}</li>`)
+    const selectedServices = Array.isArray(payload.selectedServices) && payload.selectedServices.length > 0
+        ? payload.selectedServices
+        : payload.lineItems;
+
+    const serviceRows = selectedServices
+        .map((item) => {
+            const amount = Number(item.amount);
+            const amountLabel = Number.isFinite(amount) && amount > 0 ? `$${amount.toFixed(2)}` : "TBD";
+            return `<li><strong>${item.name}</strong> - ${amountLabel}<br>${item.description || "No description provided"}</li>`;
+        })
         .join("");
 
     return `
