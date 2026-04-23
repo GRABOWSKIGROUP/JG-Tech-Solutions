@@ -157,8 +157,11 @@ contactForms.forEach((contactForm) => {
         const submitUrl = actionUrl.includes("formsubmit.co/")
             ? actionUrl.replace("formsubmit.co/", "formsubmit.co/ajax/")
             : actionUrl;
+        const webhookUrl = String(contactForm.getAttribute("data-webhook-url") || "").trim();
+        const hasWebhook = webhookUrl.startsWith("http://") || webhookUrl.startsWith("https://");
+        const hasEmailSubmit = Boolean(submitUrl);
 
-        if (!submitUrl) {
+        if (!hasWebhook && !hasEmailSubmit) {
             if (statusEl) {
                 statusEl.textContent = "Unable to submit right now. Please call 512-540-6522.";
                 statusEl.classList.add("is-error");
@@ -175,18 +178,50 @@ contactForms.forEach((contactForm) => {
             statusEl.classList.remove("is-error");
         }
 
-        fetch(submitUrl, {
-            method: "POST",
-            body: new FormData(contactForm),
-            headers: {
-                Accept: "application/json"
-            }
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Request failed");
-                }
+        const webhookPayload = {
+            ...Object.fromEntries(new FormData(contactForm).entries()),
+            source: "jgtechsolutions.net",
+            page: window.location.pathname,
+            submittedAt: new Date().toISOString()
+        };
 
+        let requestChain = Promise.resolve();
+
+        if (hasWebhook) {
+            requestChain = requestChain.then(() =>
+                fetch(webhookUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json"
+                    },
+                    body: JSON.stringify(webhookPayload)
+                }).then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Webhook request failed");
+                    }
+                })
+            );
+        }
+
+        if (hasEmailSubmit) {
+            requestChain = requestChain.then(() =>
+                fetch(submitUrl, {
+                    method: "POST",
+                    body: new FormData(contactForm),
+                    headers: {
+                        Accept: "application/json"
+                    }
+                }).then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Request failed");
+                    }
+                })
+            );
+        }
+
+        requestChain
+            .then(() => {
                 contactForm.reset();
                 if (statusEl) {
                     statusEl.textContent = successMessage;

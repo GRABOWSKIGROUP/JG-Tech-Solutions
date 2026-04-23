@@ -11,6 +11,59 @@ body {
     color: #e0e0e0;
     line-height: 1.6;
     overflow-x: hidden;
+    position: relative;
+    isolation: isolate;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: -6vh -6vw;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.22;
+    background-image: url("lOGO.png");
+    background-repeat: repeat-y;
+    background-size: min(84vw, 760px) auto;
+    background-position: center -18vh;
+    filter: saturate(1.15);
+    mix-blend-mode: screen;
+    transform: translateZ(0);
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(circle at 50% 15%, rgba(220, 24, 36, 0.08) 0%, rgba(13, 13, 13, 0) 45%);
+}
+
+body > * {
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 760px) {
+    body::before {
+        opacity: 0.16;
+        background-size: min(120vw, 540px) auto;
+        background-position: center -8vh;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before {
+        background-repeat: no-repeat;
+        background-position: center 24vh;
+    }
+}
+
+@supports not (mix-blend-mode: screen) {
+    body::before {
+        opacity: 0.12;
+    }
 }
 
 img {

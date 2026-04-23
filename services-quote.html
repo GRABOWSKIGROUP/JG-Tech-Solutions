@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Request a service quote from JG Tech Solutions.">
+    <title>Services Quote | JG Tech Solutions</title>
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --surface: #121212;
+            --surface-2: #171717;
+            --text: #e5e5e5;
+            --muted: #a5a5a5;
+            --line: #272727;
+            --brand: #8b1a1a;
+            --brand-2: #a52323;
+            --ok: #2c8f53;
+            --err: #c34444;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: radial-gradient(circle at top right, rgba(139, 26, 26, 0.18), transparent 38%), var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .wrap {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 24px 16px 56px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .brand {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 22px;
+            letter-spacing: 0.03em;
+        }
+
+        .brand span { color: var(--brand); }
+
+        .back-link {
+            color: var(--muted);
+            text-decoration: none;
+            border: 1px solid var(--line);
+            background: #121212;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .back-link:hover {
+            color: #fff;
+            border-color: #444;
+        }
+
+        .hero {
+            background: linear-gradient(145deg, #121212 0%, #1a1212 100%);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: var(--brand);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-size: 11px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: clamp(28px, 4.8vw, 46px);
+            line-height: 1.1;
+        }
+
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+            max-width: 760px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 20px;
+            margin-top: 14px;
+        }
+
+        .panel h2 {
+            margin: 0 0 14px;
+            font-size: 21px;
+        }
+
+        .subtle {
+            color: var(--muted);
+            margin: 0 0 14px;
+            font-size: 14px;
+        }
+
+        .client-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .client-pill {
+            position: relative;
+            border: 1px solid var(--line);
+            background: var(--surface-2);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .client-pill input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .client-pill strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .client-pill span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .client-pill:has(input:checked) {
+            border-color: var(--brand);
+            box-shadow: inset 0 0 0 1px rgba(139, 26, 26, 0.6);
+            background: #1a1313;
+        }
+
+        .service-group {
+            margin-top: 10px;
+            border-top: 1px solid var(--line);
+            padding-top: 12px;
+        }
+
+        .service-group h3 {
+            margin: 0 0 10px;
+            font-size: 16px;
+            color: #f2f2f2;
+        }
+
+        .service-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .service-card {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: var(--surface-2);
+            padding: 12px;
+        }
+
+        .service-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--brand);
+        }
+
+        .service-title {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .service-price {
+            margin-left: auto;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .service-note {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .service-fields {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #383838;
+            gap: 8px;
+        }
+
+        .service-card.is-active .service-fields {
+            display: grid;
+        }
+
+        label {
+            font-size: 13px;
+            color: #d1d1d1;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #353535;
+            background: #101010;
+            color: #ededed;
+            border-radius: 8px;
+            font: inherit;
+            padding: 10px 11px;
+        }
+
+        textarea {
+            min-height: 96px;
+            resize: vertical;
+        }
+
+        .client-fields {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .client-fields .full {
+            grid-column: 1 / -1;
+        }
+
+        .checks {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .check {
+            display: flex;
+            gap: 9px;
+            align-items: flex-start;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .check input {
+            margin-top: 2px;
+            accent-color: var(--brand);
+            width: 16px;
+            height: 16px;
+            flex: 0 0 auto;
+        }
+
+        .check.required-error {
+            color: #ffd7d7;
+            background: rgba(195, 68, 68, 0.12);
+            border: 1px solid rgba(195, 68, 68, 0.5);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .summary-list {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            overflow: hidden;
+            background: #101010;
+        }
+
+        .summary-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            padding: 10px 12px;
+            border-bottom: 1px solid #222;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-name {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .summary-desc {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .summary-total {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--line);
+            padding-top: 10px;
+            font-weight: 700;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 11px 16px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--brand);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover { background: var(--brand-2); }
+
+        .btn-secondary {
+            background: #1b1b1b;
+            border: 1px solid #383838;
+            color: #dadada;
+        }
+
+        .btn-primary[disabled] {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px 11px;
+            border-radius: 8px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .status.show { display: block; }
+
+        .status.ok {
+            background: rgba(44, 143, 83, 0.14);
+            border: 1px solid rgba(44, 143, 83, 0.45);
+            color: #d8ffe7;
+        }
+
+        .status.err {
+            background: rgba(195, 68, 68, 0.14);
+            border: 1px solid rgba(195, 68, 68, 0.45);
+            color: #ffe0e0;
+        }
+
+        @media (max-width: 780px) {
+            .client-fields,
+            .client-type-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero,
+            .panel {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="topbar">
+            <a class="brand" href="/">JG <span>Tech</span> Solutions</a>
+            <a class="back-link" href="/">Back to Home</a>
+        </div>
+
+        <header class="hero">
+            <p class="eyebrow">Services Quote</p>
+            <h1>Build your quote in minutes.</h1>
+            <p>Select your client type, choose services, review line items, and submit. You will receive follow-up and invoice handling through JG Tech Solutions.</p>
+        </header>
+
+        <form id="quote-form" novalidate>
+            <section class="panel">
+                <h2>1) Client Type</h2>
+                <p class="subtle">Client type controls which monthly plans are shown.</p>
+                <div class="client-type-grid">
+                    <label class="client-pill">
+                        <input type="radio" name="clientType" value="consumer" required>
+                        <strong>Consumer</strong>
+                        <span>Residential pricing and plans</span>
+                    </label>
+                    <label class="client-pill">
+                        <input type="radio" name="clientType" value="business" required>
+                        <strong>Small Business</strong>
+                        <span>Business pricing and support plans</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>2) Select Service(s)</h2>
+                <p class="subtle">You can select multiple services and add scope details for each.</p>
+
+                <div class="service-group">
+                    <h3>One-Time Services</h3>
+                    <div class="service-grid">
+                        <article class="service-card" data-service-id="diagnostic">
+                            <div class="service-row">
+                                <input id="service-diagnostic" type="checkbox" data-role="service-toggle">
+                                <label class="service-title" for="service-diagnostic">Initial Diagnostic Assessment</label>
+                                <span class="service-price">$75.00</span>
+                            </div>
+                            <p class="service-note">Applied toward repair cost if work proceeds.</p>
+                            <div class="service-fields">
+                                <label for="desc-diagnostic">Scope / description</label>
+                                <textarea id="desc-diagnostic" data-role="service-desc" placeholder="Describe the issue to be diagnosed."></textarea>
+                            </div>
+                        </article>
+
+                        <article class="service-card" data-service-id="repair">
+                            <div class="service-row">
+                                <input id="service-repair" type="checkbox" data-role="service-toggle">
+                                <label class="service-title" for="service-repair">Repair Work</label>
+                                <span class="service-price">Custom</span>
+                            </div>
+                            <p class="service-note">Select billing mode. Final labor rate is set by JG Tech Solutions after diagnostic.</p>
+                            <div class="service-fields">
+                                <label for="desc-repair">Scope / description</label>
+                                <textarea id="desc-repair" data-role="service-desc" placeholder="Describe requested repair work."></textarea>
+                                <label for="repair-billing-mode">Billing mode</label>
+                                <select id="repair-billing-mode" data-role="repair-billing">
+                                    <option value="" selected disabled>Select one</option>
+                                    <option value="hourly">Hourly</option>
+                                    <option value="plan">Plan</option>
+                                </select>
+                            </div>
+                        </article>
+
+                        <article class="service-card" data-service-id="hardware">
+                            <div class="service-row">
+                                <input id="service-hardware" type="checkbox" data-role="service-toggle">
+                                <label class="service-title" for="service-hardware">Hardware-First Support</label>
+                                <span class="service-price">Cost + 20%</span>
+                            </div>
+                            <p class="service-note">Enter hardware cost and quote uses cost + 20% handling margin.</p>
+                            <div class="service-fields">
+                                <label for="desc-hardware">Scope / description</label>
+                                <textarea id="desc-hardware" data-role="service-desc" placeholder="Describe hardware and support scope."></textarea>
+                                <label for="amount-hardware">Hardware cost before margin (USD)</label>
+                                <input id="amount-hardware" type="number" min="0" step="0.01" data-role="hardware-cost" placeholder="0.00">
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="service-group" id="consumer-plans" hidden>
+                    <h3>Consumer Monthly Plans</h3>
+                    <div class="service-grid">
+                        <article class="service-card" data-service-id="priority-care-basic">
+                            <div class="service-row">
+                                <input id="service-priority-care-basic" type="checkbox" data-role="service-toggle">
+                                <label class="service-title" for="service-priority-care-basic">Priority Care Basic</label>
+                                <span class="service-price">$20.00/mo</span>
+                            </div>
+                            <p class="service-note">Credit toward labor this month only. No rollover.</p>
+                            <div class="service-fields">
+                                <label for="desc-priority-care-basic">Scope / description</label>
+                                <textarea id="desc-priority-care-basic" data-role="service-desc" placeholder="Describe expected monthly support needs."></textarea>
+                            </div>
+                        </article>
+
+                        <article class="service-card" data-service-id="priority-care-plus">
+                            <div class="service-row">
+                                <input id="service-priority-care-plus" type="checkbox" data-role="service-toggle">
+                                <label class="service-title" for="service-priority-care-plus">Priority Care Plus</label>
+                                <span class="service-price">$40.00/mo</span>
+                            </div>
+                            <p class="service-note">Credit toward labor this month only. No rollover.</p>
+                            <div class="service-fields">
+                                <label for="desc-priority-care-plus">Scope / description</label>
+                                <textarea id="desc-priority-care-plus" data-role="service-desc" placeholder="Describe expected monthly support needs."></textarea>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="service-group" id="business-plans" hidden>
+                    <h3>Business Monthly Plans</h3>
+                    <div class="service-grid">
+                        <article class="service-card" data-service-id="priority-support-standard">
+                            <div class="service-row">
+                                <input id="service-priority-support-standard" type="checkbox" data-role="service-toggle">
+                                <label class="service-title" for="service-priority-support-standard">Priority Support Standard</label>
+                                <span class="service-price">$60.00/mo</span>
+                            </div>
+                            <p class="service-note">Credit toward labor this month only. No rollover.</p>
+                            <div class="service-fields">
+                                <label for="desc-priority-support-standard">Scope / description</label>
+                                <textarea id="desc-priority-support-standard" data-role="service-desc" placeholder="Describe expected monthly support needs."></textarea>
+                            </div>
+                        </article>
+
+                        <article class="service-card" data-service-id="priority-support-pro">
+                            <div class="service-row">
+                                <input id="service-priority-support-pro" type="checkbox" data-role="service-toggle">
+                                <label class="service-title" for="service-priority-support-pro">Priority Support Pro</label>
+                                <span class="service-price">$90.00/mo</span>
+                            </div>
+                            <p class="service-note">Credit toward labor this month only. No rollover.</p>
+                            <div class="service-fields">
+                                <label for="desc-priority-support-pro">Scope / description</label>
+                                <textarea id="desc-priority-support-pro" data-role="service-desc" placeholder="Describe expected monthly support needs."></textarea>
+                            </div>
+                        </article>
+
+                        <article class="service-card" data-service-id="priority-support-premium">
+                            <div class="service-row">
+                                <input id="service-priority-support-premium" type="checkbox" data-role="service-toggle">
+                                <label class="service-title" for="service-priority-support-premium">Priority Support Premium</label>
+                                <span class="service-price">$120.00/mo</span>
+                            </div>
+                            <p class="service-note">Credit toward labor this month only. No rollover.</p>
+                            <div class="service-fields">
+                                <label for="desc-priority-support-premium">Scope / description</label>
+                                <textarea id="desc-priority-support-premium" data-role="service-desc" placeholder="Describe expected monthly support needs."></textarea>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>3) Client Contact</h2>
+                <div class="client-fields">
+                    <div>
+                        <label for="client-name">Client name</label>
+                        <input id="client-name" type="text" required>
+                    </div>
+                    <div>
+                        <label for="client-email">Client email</label>
+                        <input id="client-email" type="email" required>
+                    </div>
+                    <div class="full">
+                        <label for="client-phone">Client phone</label>
+                        <input id="client-phone" type="tel" required>
+                    </div>
+                </div>
+                <div class="checks">
+                    <label class="check" for="consent-contact">
+                        <input id="consent-contact" type="checkbox">
+                        <span>I agree to be contacted by JG Tech Solutions regarding this quote via email or phone.</span>
+                    </label>
+                    <label class="check" id="pricing-check-wrap" for="pricing-disclaimer">
+                        <input id="pricing-disclaimer" type="checkbox" required>
+                        <span>I understand that the quoted amount is an estimate only. Final pricing may vary based on actual diagnostic findings and scope of work.</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="panel">
+                <h2>4) Review Quote Summary</h2>
+                <div class="summary-list" id="summary-list"></div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="summary-total">$0.00</span>
+                </div>
+                <div class="actions">
+                    <button class="btn-primary" type="submit" id="submit-btn">Submit Quote</button>
+                    <button class="btn-secondary" type="button" id="refresh-btn">Refresh Summary</button>
+                </div>
+                <p class="status" id="form-status" role="status" aria-live="polite"></p>
+            </section>
+        </form>
+    </div>
+
+    <script>
+        const MONTHLY_NOTE = "Monthly plan credit applies toward labor this month only. Unused credit does not roll over.";
+        const DIAGNOSTIC_NOTE = "Applied toward repair cost if work proceeds.";
+
+        const SERVICE_CATALOG = {
+            diagnostic: { name: "Initial Diagnostic Assessment", type: "fixed", amount: 75, clientTypes: ["consumer", "business"], note: DIAGNOSTIC_NOTE },
+            repair: { name: "Repair Work", type: "repairMode", clientTypes: ["consumer", "business"] },
+            hardware: { name: "Hardware-First Support", type: "hardwareMargin", clientTypes: ["consumer", "business"] },
+            "priority-care-basic": { name: "Priority Care Basic", type: "fixed", amount: 20, clientTypes: ["consumer"], note: MONTHLY_NOTE },
+            "priority-care-plus": { name: "Priority Care Plus", type: "fixed", amount: 40, clientTypes: ["consumer"], note: MONTHLY_NOTE },
+            "priority-support-standard": { name: "Priority Support Standard", type: "fixed", amount: 60, clientTypes: ["business"], note: MONTHLY_NOTE },
+            "priority-support-pro": { name: "Priority Support Pro", type: "fixed", amount: 90, clientTypes: ["business"], note: MONTHLY_NOTE },
+            "priority-support-premium": { name: "Priority Support Premium", type: "fixed", amount: 120, clientTypes: ["business"], note: MONTHLY_NOTE }
+        };
+
+        const quoteForm = document.getElementById("quote-form");
+        const summaryList = document.getElementById("summary-list");
+        const summaryTotalEl = document.getElementById("summary-total");
+        const pricingDisclaimer = document.getElementById("pricing-disclaimer");
+        const pricingWrap = document.getElementById("pricing-check-wrap");
+        const submitBtn = document.getElementById("submit-btn");
+        const refreshBtn = document.getElementById("refresh-btn");
+        const statusEl = document.getElementById("form-status");
+        const consumerPlans = document.getElementById("consumer-plans");
+        const businessPlans = document.getElementById("business-plans");
+
+        function dollars(value) {
+            return `$${value.toFixed(2)}`;
+        }
+
+        function parseMoney(value) {
+            const numeric = Number.parseFloat(String(value || "0"));
+            if (!Number.isFinite(numeric) || numeric <= 0) {
+                return 0;
+            }
+            return Math.round(numeric * 100) / 100;
+        }
+
+        function getClientType() {
+            const checked = quoteForm.querySelector("input[name='clientType']:checked");
+            return checked ? checked.value : "";
+        }
+
+        function syncClientTypeUI() {
+            const clientType = getClientType();
+            consumerPlans.hidden = clientType !== "consumer";
+            businessPlans.hidden = clientType !== "business";
+
+            const hiddenGroup = clientType === "consumer" ? businessPlans : consumerPlans;
+            hiddenGroup.querySelectorAll("[data-role='service-toggle']").forEach((toggle) => {
+                toggle.checked = false;
+                const card = toggle.closest(".service-card");
+                if (card) {
+                    card.classList.remove("is-active");
+                    card.querySelectorAll("textarea, input[type='number']").forEach((field) => {
+                        field.value = "";
+                    });
+                }
+            });
+
+            renderSummary();
+        }
+
+        function activeServiceCards() {
+            return Array.from(quoteForm.querySelectorAll(".service-card")).filter((card) => {
+                const toggle = card.querySelector("[data-role='service-toggle']");
+                if (!(toggle instanceof HTMLInputElement) || !toggle.checked) {
+                    return false;
+                }
+                const serviceId = card.getAttribute("data-service-id") || "";
+                const service = SERVICE_CATALOG[serviceId];
+                const clientType = getClientType();
+                return Boolean(service && service.clientTypes.includes(clientType));
+            });
+        }
+
+        function collectLineItems() {
+            return activeServiceCards().map((card) => {
+                const serviceId = card.getAttribute("data-service-id") || "";
+                const service = SERVICE_CATALOG[serviceId];
+                const descEl = card.querySelector("[data-role='service-desc']");
+                const baseDescription = (descEl instanceof HTMLTextAreaElement ? descEl.value : "").trim();
+                let description = baseDescription;
+                let billingMode = "";
+
+                let amount = 0;
+                if (service.type === "fixed") {
+                    amount = service.amount;
+                } else if (service.type === "repairMode") {
+                    const billingSelect = card.querySelector("[data-role='repair-billing']");
+                    if (billingSelect instanceof HTMLSelectElement) {
+                        billingMode = billingSelect.value;
+                    }
+                    const billingLabel = billingMode === "hourly"
+                        ? "Hourly (rate set by JG Tech Solutions after diagnostic)"
+                        : billingMode === "plan"
+                            ? "Plan credit"
+                            : "";
+                    description = [baseDescription, billingLabel ? `Billing: ${billingLabel}` : ""].filter(Boolean).join(" | ");
+                } else if (service.type === "hardwareMargin") {
+                    const hardwareInput = card.querySelector("[data-role='hardware-cost']");
+                    const baseCost = parseMoney(hardwareInput instanceof HTMLInputElement ? hardwareInput.value : "0");
+                    amount = Math.round(baseCost * 1.2 * 100) / 100;
+                }
+
+                return {
+                    serviceId,
+                    name: service.name,
+                    baseDescription,
+                    description,
+                    amount,
+                    billingMode,
+                    note: service.note || ""
+                };
+            });
+        }
+
+        function renderSummary() {
+            const items = collectLineItems().filter((item) => item.amount > 0 || item.description.length > 0);
+
+            if (items.length === 0) {
+                summaryList.innerHTML = '<div class="summary-row"><p class="summary-name">No services selected yet.</p><span>$0.00</span></div>';
+                summaryTotalEl.textContent = "$0.00";
+                return;
+            }
+
+            let total = 0;
+            summaryList.innerHTML = items.map((item) => {
+                total += item.amount;
+                const safeDesc = item.description || "No description added yet.";
+                const amountLabel = item.amount > 0 ? dollars(item.amount) : "TBD";
+                return `<div class="summary-row"><div><p class="summary-name">${item.name}</p><p class="summary-desc">${safeDesc}</p></div><span>${amountLabel}</span></div>`;
+            }).join("");
+
+            summaryTotalEl.textContent = dollars(total);
+        }
+
+        function setStatus(message, type) {
+            statusEl.textContent = message;
+            statusEl.className = `status show ${type}`;
+        }
+
+        function clearStatus() {
+            statusEl.className = "status";
+            statusEl.textContent = "";
+        }
+
+        function validateForm(lineItems) {
+            const clientType = getClientType();
+            const clientName = document.getElementById("client-name").value.trim();
+            const clientEmail = document.getElementById("client-email").value.trim();
+            const clientPhone = document.getElementById("client-phone").value.trim();
+
+            if (!clientType) {
+                return "Please select a client type.";
+            }
+
+            if (!clientName || !clientEmail || !clientPhone) {
+                return "Please complete client name, email, and phone.";
+            }
+
+            if (lineItems.length === 0) {
+                return "Select at least one service with valid quote details.";
+            }
+
+            const invalidItem = lineItems.find((item) => {
+                if (item.serviceId === "repair") {
+                    return !item.baseDescription || !item.billingMode;
+                }
+                return !item.baseDescription || item.amount <= 0;
+            });
+            if (invalidItem) {
+                if (invalidItem.serviceId === "repair") {
+                    return "Please complete scope and select Hourly or Plan for Repair Work.";
+                }
+                return `Please complete description and amount for ${invalidItem.name}.`;
+            }
+
+            if (!lineItems.some((item) => item.amount > 0)) {
+                return "Add at least one priced service (such as Initial Diagnostic Assessment or a monthly plan) before submitting.";
+            }
+
+            if (!pricingDisclaimer.checked) {
+                pricingWrap.classList.add("required-error");
+                return "You must accept the pricing disclaimer before submitting.";
+            }
+
+            pricingWrap.classList.remove("required-error");
+            return "";
+        }
+
+        quoteForm.querySelectorAll("[data-role='service-toggle']").forEach((toggle) => {
+            toggle.addEventListener("change", () => {
+                const card = toggle.closest(".service-card");
+                if (card) {
+                    card.classList.toggle("is-active", toggle.checked);
+                }
+                renderSummary();
+            });
+        });
+
+        quoteForm.querySelectorAll("textarea, input[type='number'], select").forEach((field) => {
+            field.addEventListener("input", renderSummary);
+            field.addEventListener("change", renderSummary);
+        });
+
+        quoteForm.querySelectorAll("input[name='clientType']").forEach((radio) => {
+            radio.addEventListener("change", syncClientTypeUI);
+        });
+
+        refreshBtn.addEventListener("click", renderSummary);
+
+        quoteForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            clearStatus();
+
+            const lineItems = collectLineItems().filter((item) => item.amount > 0 || item.description.length > 0);
+            const validationMessage = validateForm(lineItems);
+            if (validationMessage) {
+                setStatus(validationMessage, "err");
+                return;
+            }
+
+            const total = Math.round(lineItems.reduce((sum, item) => sum + item.amount, 0) * 100) / 100;
+            const payload = {
+                clientType: getClientType(),
+                clientName: document.getElementById("client-name").value.trim(),
+                clientEmail: document.getElementById("client-email").value.trim(),
+                clientPhone: document.getElementById("client-phone").value.trim(),
+                consentToContact: document.getElementById("consent-contact").checked,
+                pricingDisclaimer: pricingDisclaimer.checked,
+                lineItems: lineItems.map((item) => ({
+                    name: item.name,
+                    description: item.note ? `${item.description} | ${item.note}` : item.description,
+                    amount: item.amount
+                })),
+                total
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Submitting...";
+
+            try {
+                const response = await fetch("/api/submit-quote", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(data.error || "Unable to submit quote right now.");
+                }
+
+                setStatus(`Your quote has been submitted. You will be contacted shortly. Square invoice ID: ${data.invoiceId || "Pending"}.`, "ok");
+            } catch (error) {
+                setStatus(error.message || "Unable to submit quote right now. Please try again.", "err");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Submit Quote";
+            }
+        });
+
+        pricingDisclaimer.addEventListener("change", () => {
+            if (pricingDisclaimer.checked) {
+                pricingWrap.classList.remove("required-error");
+            }
+        });
+
+        syncClientTypeUI();
+        renderSummary();
+    </script>
+</body>
+</html>
